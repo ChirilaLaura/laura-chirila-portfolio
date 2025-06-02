@@ -225,43 +225,4 @@ const blogCarousel = new Swiper(".blog-carousel", {
 	});
 })();
 
-// 8. Contact form
-const form = document.querySelector("#contact-form");
-
-if (form) {
-	const formStatus = form.querySelector(".status");
-
-	form.addEventListener("submit", function (e) {
-		e.preventDefault();
-		let formData = new FormData(form);
-
-		let xhr = new XMLHttpRequest();
-		xhr.open("POST", form.action);
-		xhr.onload = function () {
-			if (xhr.status === 200) {
-				formStatus.classList.remove("hidden");
-				formStatus.classList.remove("alert-danger");
-				formStatus.classList.add("alert-success");
-				formStatus.textContent = xhr.responseText;
-				form.reset();
-				setTimeout(() => {
-					formStatus.classList.add("hidden");
-				}, 6000);
-			} else {
-				formStatus.classList.remove("hidden");
-				formStatus.classList.remove("alert-success");
-				formStatus.classList.add("alert-danger");
-				if (xhr.responseText !== "") {
-					formStatus.textContent = xhr.responseText;
-				} else {
-					formStatus.textContent =
-						"Oops! An error occurred and your message could not be sent.";
-				}
-				setTimeout(() => {
-					formStatus.classList.add("hidden");
-				}, 6000);
-			}
-		};
-		xhr.send(formData);
-	});
-}
+// Contact form is handled by contact-form.js for Netlify Forms compatibility
