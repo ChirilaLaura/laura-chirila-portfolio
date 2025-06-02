@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .replace(/\//g, '&#x2F;');
   }
 
-  // Check if we're on a success page (Netlify redirect after form submission)
+  // Check if we're on a success page (after Netlify redirect)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('success') && statusAlert) {
     // Show success message
@@ -27,11 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
       statusAlert.classList.add('hidden');
     }, 10000);
 
-    // Clear the URL parameters
-    window.history.replaceState({}, document.title, window.location.pathname);
+    // Clear the URL parameters after showing the message
+    setTimeout(() => {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }, 1000);
   }
 
-  // Add form submission handler for visual feedback and sanitization
+  // Add form submission handler for sanitization and visual feedback
   if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
       // Sanitize all inputs before submission
@@ -41,8 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (input.name !== 'bot-field' && input.type !== 'hidden') {
           // Only sanitize if the input has a value
           if (input.value.trim()) {
-            // Store the original value for reference (optional)
-            input.dataset.originalValue = input.value;
             // Apply sanitization
             input.value = sanitizeInput(input.value);
           }
@@ -56,11 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.disabled = true;
         submitButton.innerHTML = '<span>Sending...</span><div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full ml-2" role="status" aria-label="loading"></div>';
         
-        // Reset button after 3 seconds in case the page doesn't redirect immediately
-        setTimeout(() => {
-          submitButton.disabled = false;
-          submitButton.innerHTML = originalText;
-        }, 3000);
+        // Note: Don't try to handle the response - let Netlify handle the redirect
+        // The form will submit naturally and Netlify will redirect to the success page
       }
     });
   }
