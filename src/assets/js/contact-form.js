@@ -16,16 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Check if we're on a success page (Netlify redirect after form submission)
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('form-success') && statusAlert) {
+  if (urlParams.has('success') && statusAlert) {
     // Show success message
-    statusAlert.textContent = 'Thank you! Your message has been sent successfully.';
+    statusAlert.textContent = '✅ Thank you! Your message has been sent successfully. I\'ll get back to you soon!';
     statusAlert.classList.remove('hidden');
-    statusAlert.classList.add('text-green-500');
+    statusAlert.classList.add('text-green-600', 'bg-green-50', 'border', 'border-green-200', 'rounded-lg', 'p-4', 'mt-4');
     
-    // Hide the message after 5 seconds
+    // Hide the message after 10 seconds
     setTimeout(() => {
       statusAlert.classList.add('hidden');
-    }, 5000);
+    }, 10000);
+
+    // Clear the URL parameters
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 
   // Add form submission handler for visual feedback and sanitization
@@ -51,13 +54,13 @@ document.addEventListener('DOMContentLoaded', function() {
       if (submitButton) {
         const originalText = submitButton.innerHTML;
         submitButton.disabled = true;
-        submitButton.innerHTML = '<span>Sending...</span>';
+        submitButton.innerHTML = '<span>Sending...</span><div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full ml-2" role="status" aria-label="loading"></div>';
         
-        // Reset button after 2 seconds in case the page doesn't redirect immediately
+        // Reset button after 3 seconds in case the page doesn't redirect immediately
         setTimeout(() => {
           submitButton.disabled = false;
           submitButton.innerHTML = originalText;
-        }, 2000);
+        }, 3000);
       }
     });
   }
