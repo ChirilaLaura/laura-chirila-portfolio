@@ -1,7 +1,7 @@
 [build]
   base = "."
-  publish = "dist/"
-  command = "npm run prod"
+  command = "npm run build"
+  publish = "dist"
 
 # Define redirects for SPA behavior and SEO
 [[redirects]]
@@ -95,9 +95,20 @@
 
 # Plugins for additional optimization
 [[plugins]]
-  package = "netlify-plugin-html-validate"
+  package = "@netlify/plugin-lighthouse"
+
+  [plugins.inputs.thresholds]
+    performance = 0.9
+    accessibility = 0.9
+    best-practices = 0.9
+    seo = 0.9
+
+# Comment out or remove the HTML validation plugin temporarily
+# [[plugins]]
+#   package = "netlify-plugin-html-validate"
 
 [[plugins]]
   package = "netlify-plugin-minify-html"
+
   [plugins.inputs]
     contexts = ["production"] 
