@@ -1,0 +1,34 @@
+{
+  "name": "Laura Chirila - AI & Software Engineer Portfolio",
+  "short_name": "Laura Chirila",
+  "description": "Portfolio of Laura Chirila - AI & Software Engineer, Entrepreneur, and Data Science specialist",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "categories": ["portfolio", "technology", "education"],
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/img/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/img/portfolio-screenshot.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Laura Chirila Portfolio Homepage"
+    }
+  ]
+} 

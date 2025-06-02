@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Block access to sensitive files and directories
+Disallow: /assets/css/
+Disallow: /assets/js/
+Disallow: /php/
+Disallow: /partials/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /node_modules/
+
+# Allow important files
+Allow: /assets/img/
+Allow: /assets/fonts/
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap location
+Sitemap: https://laurachirila.com/sitemap.xml
+
+# Crawl delay (optional - helps with server load)
+Crawl-delay: 1 
