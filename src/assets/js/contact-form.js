@@ -18,27 +18,58 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!statusAlert) return;
     
     statusAlert.classList.remove('hidden');
-    statusAlert.textContent = message;
+    statusAlert.innerHTML = message;
     
     // Clear previous classes
     statusAlert.classList.remove('text-green-600', 'bg-green-50', 'border-green-200', 
-                                 'text-red-600', 'bg-red-50', 'border-red-200');
+                                 'text-red-600', 'bg-red-50', 'border-red-200',
+                                 'transform', 'scale-95', 'opacity-0');
     
     if (isSuccess) {
-      statusAlert.classList.add('text-green-600', 'bg-green-50', 'border', 'border-green-200', 'rounded-lg', 'p-4', 'mt-4');
+      statusAlert.classList.add('text-green-600', 'bg-green-50', 'border', 'border-green-200', 'rounded-lg', 'p-4', 'mt-4', 'shadow-sm', 'transform', 'transition-all', 'duration-500', 'ease-out');
+      
+      // Add slide-in animation
+      statusAlert.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        statusAlert.classList.remove('scale-95', 'opacity-0');
+        statusAlert.classList.add('scale-100', 'opacity-100');
+      }, 10);
     } else {
-      statusAlert.classList.add('text-red-600', 'bg-red-50', 'border', 'border-red-200', 'rounded-lg', 'p-4', 'mt-4');
+      statusAlert.classList.add('text-red-600', 'bg-red-50', 'border', 'border-red-200', 'rounded-lg', 'p-4', 'mt-4', 'shadow-sm', 'transform', 'transition-all', 'duration-500', 'ease-out');
+      
+      // Add slide-in animation
+      statusAlert.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        statusAlert.classList.remove('scale-95', 'opacity-0');
+        statusAlert.classList.add('scale-100', 'opacity-100');
+      }, 10);
     }
     
+    // Auto-hide with fade-out animation
     setTimeout(() => {
-      statusAlert.classList.add('hidden');
+      statusAlert.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        statusAlert.classList.add('hidden');
+      }, 500);
     }, 8000);
   }
 
   // Check for success parameter on page load (after Netlify redirect)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('success') && urlParams.get('success') === 'true') {
-    showStatusMessage('✅ Thank you! Your message has been sent successfully. I\'ll get back to you soon!', true);
+    showStatusMessage(`
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0">
+          <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-green-800">Message sent successfully!</h3>
+          <p class="text-sm text-green-700 mt-1">Thank you for reaching out! I'll get back to you within 24 hours.</p>
+        </div>
+      </div>
+    `, true);
     // Clear the success parameter from URL
     window.history.replaceState({}, document.title, window.location.pathname);
   }
@@ -65,7 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitButton = contactForm.querySelector('button[type="submit"]');
         if (submitButton) {
           submitButton.disabled = true;
-          submitButton.innerHTML = '<span>Sending...</span><div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full ml-2" role="status" aria-label="loading"></div>';
+          submitButton.innerHTML = `
+            <div class="flex items-center justify-center gap-2">
+              <div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading"></div>
+              <span>Sending your message...</span>
+            </div>
+          `;
+          submitButton.classList.add('opacity-90', 'cursor-not-allowed');
         }
         
         // Do NOT prevent default - let Netlify handle the form
@@ -101,7 +138,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const submitButton = finalForm.querySelector('button[type="submit"]');
             if (submitButton) {
               submitButton.disabled = true;
-              submitButton.innerHTML = '<span>Sending...</span><div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full ml-2" role="status" aria-label="loading"></div>';
+              submitButton.innerHTML = `
+                <div class="flex items-center justify-center gap-2">
+                  <div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading"></div>
+                  <span>Sending your message...</span>
+                </div>
+              `;
+              submitButton.classList.add('opacity-90', 'cursor-not-allowed');
             }
             
             // Let Netlify handle the form submission
