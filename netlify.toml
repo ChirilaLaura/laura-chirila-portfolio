@@ -4,6 +4,34 @@
   publish = "dist"
 
 # Define redirects for SPA behavior and SEO
+# Handle contact form success page specifically
+[[redirects]]
+  from = "/contact/"
+  to = "/contact.html"
+  status = 200
+
+# Handle other specific routes that should not redirect to index
+[[redirects]]
+  from = "/about/"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/portfolio/"
+  to = "/portfolio.html"
+  status = 200
+
+[[redirects]]
+  from = "/services/"
+  to = "/services.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/"
+  to = "/blog.html"
+  status = 200
+
+# Fallback redirect for SPA behavior
 [[redirects]]
   from = "/*"
   to = "/index.html"
