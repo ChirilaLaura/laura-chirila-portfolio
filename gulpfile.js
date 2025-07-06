@@ -43,7 +43,7 @@ const paths = {
 		destProd: `./${distPathName}/assets/css`,
 	},
 	js: {
-		src: `./${srcPathName}/js/**/*.js`,
+		src: [`./${srcPathName}/js/**/*.js`, `./${srcPathName}/assets/js/**/*.js`],
 		externals: `./${srcPathName}/js/externals/**/*.js`,
 		dest: `./${buildPathName}/assets/js`,
 		destProd: `./${distPathName}/assets/js`,
@@ -139,7 +139,7 @@ function cssTaskProd() {
 
 // JavaScript Task
 function jsTask() {
-	return src([paths.js.src, `!${paths.js.externals}`])
+	return src([...paths.js.src, `!${paths.js.externals}`])
 		.pipe(dest(paths.js.dest))
 		.pipe(src(paths.js.externals))
 		.pipe(dest(paths.js.dest));
@@ -147,7 +147,7 @@ function jsTask() {
 
 // JavaScript Task Production
 function jsTaskProd() {
-	return src([paths.js.src, `!${paths.js.externals}`])
+	return src([...paths.js.src, `!${paths.js.externals}`])
 		.pipe(uglify())
 		.pipe(dest(paths.js.destProd))
 		.pipe(src(paths.js.externals))
