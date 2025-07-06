@@ -1,157 +1,120 @@
+// Simple, foolproof contact form success message
+console.log('=== CONTACT FORM SCRIPT LOADED ===');
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Check for success message immediately
+  setTimeout(function() {
+    showSuccessIfNeeded();
+  }, 100);
+  
+  // Also check after page fully loads
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      showSuccessIfNeeded();
+    }, 200);
+  });
+});
+
+function showSuccessIfNeeded() {
+  console.log('=== CHECKING FOR SUCCESS PARAMETER ===');
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasSuccess = urlParams.has('success');
+  const successValue = urlParams.get('success');
+  
+  console.log('Current URL:', window.location.href);
+  console.log('Has success param:', hasSuccess);
+  console.log('Success value:', successValue);
+  
+  if (hasSuccess && successValue === 'true') {
+    console.log('=== SUCCESS PARAMETER FOUND! SHOWING MESSAGE ===');
+    
+    // Find the status element
+    const statusElement = document.querySelector('.status.alert');
+    console.log('Status element found:', !!statusElement);
+    
+    if (statusElement) {
+      // Show the success message
+      statusElement.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; color: #166534;">
+          <div style="font-size: 24px;">✅</div>
+          <div>
+            <div style="font-weight: 600; font-size: 14px; color: #166534;">Message sent successfully!</div>
+            <div style="font-size: 14px; color: #16a34a; margin-top: 4px;">Thank you for reaching out! I'll get back to you within 24 hours.</div>
+          </div>
+        </div>
+      `;
+      
+      // Make it visible
+      statusElement.style.display = 'block';
+      statusElement.classList.remove('hidden');
+      
+      console.log('=== SUCCESS MESSAGE DISPLAYED ===');
+      
+      // Auto-hide after 10 seconds
+      setTimeout(function() {
+        statusElement.style.display = 'none';
+        statusElement.classList.add('hidden');
+        console.log('=== SUCCESS MESSAGE HIDDEN ===');
+      }, 10000);
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      console.log('=== URL CLEANED ===');
+    } else {
+      console.error('=== STATUS ELEMENT NOT FOUND ===');
+      
+      // Create our own success message
+      const successDiv = document.createElement('div');
+      successDiv.innerHTML = `
+        <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; align-items: center; gap: 12px; padding: 16px; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; color: #166534; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <div style="font-size: 24px;">✅</div>
+          <div>
+            <div style="font-weight: 600; font-size: 14px; color: #166534;">Message sent successfully!</div>
+            <div style="font-size: 14px; color: #16a34a; margin-top: 4px;">Thank you for reaching out! I'll get back to you within 24 hours.</div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(successDiv);
+      console.log('=== CREATED FALLBACK SUCCESS MESSAGE ===');
+      
+      // Auto-hide after 10 seconds
+      setTimeout(function() {
+        successDiv.remove();
+        console.log('=== FALLBACK MESSAGE REMOVED ===');
+      }, 10000);
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  } else {
+    console.log('=== NO SUCCESS PARAMETER FOUND ===');
+  }
+}
+
+// Form submission handling (optional - for better UX)
 document.addEventListener('DOMContentLoaded', function() {
   const contactForm = document.getElementById('contact-form');
-  const statusAlert = document.querySelector('.status.alert');
-
-  // Helper function to sanitize inputs
-  function sanitizeInput(input) {
-    return input
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;')
-      .replace(/\//g, '&#x2F;');
-  }
-
-  // Show status message
-  function showStatusMessage(message, isSuccess = true) {
-    if (!statusAlert) return;
-    
-    statusAlert.classList.remove('hidden');
-    statusAlert.innerHTML = message;
-    
-    // Clear previous classes
-    statusAlert.classList.remove('text-green-600', 'bg-green-50', 'border-green-200', 
-                                 'text-red-600', 'bg-red-50', 'border-red-200',
-                                 'transform', 'scale-95', 'opacity-0');
-    
-    if (isSuccess) {
-      statusAlert.classList.add('text-green-600', 'bg-green-50', 'border', 'border-green-200', 'rounded-lg', 'p-4', 'mt-4', 'shadow-sm', 'transform', 'transition-all', 'duration-500', 'ease-out');
-      
-      // Add slide-in animation
-      statusAlert.classList.add('scale-95', 'opacity-0');
-      setTimeout(() => {
-        statusAlert.classList.remove('scale-95', 'opacity-0');
-        statusAlert.classList.add('scale-100', 'opacity-100');
-      }, 10);
-    } else {
-      statusAlert.classList.add('text-red-600', 'bg-red-50', 'border', 'border-red-200', 'rounded-lg', 'p-4', 'mt-4', 'shadow-sm', 'transform', 'transition-all', 'duration-500', 'ease-out');
-      
-      // Add slide-in animation
-      statusAlert.classList.add('scale-95', 'opacity-0');
-      setTimeout(() => {
-        statusAlert.classList.remove('scale-95', 'opacity-0');
-        statusAlert.classList.add('scale-100', 'opacity-100');
-      }, 10);
-    }
-    
-    // Auto-hide with fade-out animation
-    setTimeout(() => {
-      statusAlert.classList.add('scale-95', 'opacity-0');
-      setTimeout(() => {
-        statusAlert.classList.add('hidden');
-      }, 500);
-    }, 8000);
-  }
-
-  // Check for success parameter on page load (after Netlify redirect)
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('success') && urlParams.get('success') === 'true') {
-    showStatusMessage(`
-      <div class="flex items-center gap-3">
-        <div class="flex-shrink-0">
-          <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <div class="flex-1">
-          <h3 class="text-sm font-medium text-green-800">Message sent successfully!</h3>
-          <p class="text-sm text-green-700 mt-1">Thank you for reaching out! I'll get back to you within 24 hours.</p>
-        </div>
-      </div>
-    `, true);
-    // Clear the success parameter from URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-
-  // Form submission handler
+  
   if (contactForm) {
+    console.log('=== CONTACT FORM FOUND ===');
+    
     contactForm.addEventListener('submit', function(e) {
-      // Check if this is a Netlify form
-      const isNetlifyForm = contactForm.hasAttribute('data-netlify');
+      console.log('=== FORM SUBMITTED ===');
       
-      if (isNetlifyForm) {
-        // For Netlify forms, just sanitize inputs and show loading state
-        // Let the form submit naturally to Netlify
-        
-        // Sanitize inputs
-        const formInputs = contactForm.querySelectorAll('input[type="text"], input[type="email"], textarea');
-        formInputs.forEach(input => {
-          if (input.name !== 'bot-field' && input.type !== 'hidden' && input.value.trim()) {
-            input.value = sanitizeInput(input.value);
-          }
-        });
-
-        // Show loading state
-        const submitButton = contactForm.querySelector('button[type="submit"]');
-        if (submitButton) {
-          submitButton.disabled = true;
-          submitButton.innerHTML = `
-            <div class="flex items-center justify-center gap-2">
-              <div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading"></div>
-              <span>Sending your message...</span>
-            </div>
-          `;
-          submitButton.classList.add('opacity-90', 'cursor-not-allowed');
-        }
-        
-        // Do NOT prevent default - let Netlify handle the form
-        return true;
+      // Show loading state
+      const submitButton = contactForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = '⏳ Sending...';
+        console.log('=== LOADING STATE SHOWN ===');
       }
+      
+      // Let the form submit naturally to Netlify
+      return true;
     });
+  } else {
+    console.log('=== CONTACT FORM NOT FOUND ===');
   }
-
-  // Prevent any other scripts from interfering with form submission
-  window.addEventListener('load', function() {
-    // Remove any other form event listeners that might conflict
-    if (contactForm) {
-      // Clone the form to remove all other event listeners
-      const newForm = contactForm.cloneNode(true);
-      contactForm.parentNode.replaceChild(newForm, contactForm);
-      
-      // Re-add our form handler to the new form
-      const finalForm = document.getElementById('contact-form');
-      if (finalForm) {
-        finalForm.addEventListener('submit', function(e) {
-          const isNetlifyForm = finalForm.hasAttribute('data-netlify');
-          
-          if (isNetlifyForm) {
-            // Sanitize inputs
-            const formInputs = finalForm.querySelectorAll('input[type="text"], input[type="email"], textarea');
-            formInputs.forEach(input => {
-              if (input.name !== 'bot-field' && input.type !== 'hidden' && input.value.trim()) {
-                input.value = sanitizeInput(input.value);
-              }
-            });
-
-            // Show loading state
-            const submitButton = finalForm.querySelector('button[type="submit"]');
-            if (submitButton) {
-              submitButton.disabled = true;
-              submitButton.innerHTML = `
-                <div class="flex items-center justify-center gap-2">
-                  <div class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading"></div>
-                  <span>Sending your message...</span>
-                </div>
-              `;
-              submitButton.classList.add('opacity-90', 'cursor-not-allowed');
-            }
-            
-            // Let Netlify handle the form submission
-            return true;
-          }
-        });
-      }
-    }
-  });
 }); 
